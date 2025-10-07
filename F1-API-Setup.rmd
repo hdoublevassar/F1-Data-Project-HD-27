@@ -49,10 +49,7 @@ print(session_data)
 ##I am creating a new dataframe that 2025-filters the session_data dataframe, isolating just the session type and the year
 
 race_sessions_2025 <- dplyr::filter(session_data, session_name == "Race", year == 2025) 
-
-<<<<<<< Updated upstream
-
-=======
+```
 
 # This chunk is completely unnecessary currently, but it is could be potentially useful later on so I figured I'd throw it in now lol 
 ```{r Meetings-API}
@@ -68,6 +65,19 @@ meeting_data <- jsonlite::fromJSON(text, simplifyVector = TRUE)
 print(meeting_data)
 ```
 
+# This chunk is completely unnecessary currently, but it is could be potentially useful later on so I figured I'd throw it in now lol
+```{r Meetings-API}
+url_meetings <- "https://api.openf1.org/v1/meetings"
+##Honestly not important, but figured I might as well add it in here in case I need it later
+resp <- httr::GET(url_meetings)
+if (resp$status_code != 200) {
+  stop("Request failed: ", resp$status_code, " — ", httr::content(resp, "text"))
+}
+
+text <- httr::content(resp, "text", encoding = "UTF-8")
+meeting_data <- jsonlite::fromJSON(text, simplifyVector = TRUE)
+print(meeting_data)
+```
 
 # This chunk is intended to retreave all pitstop data from the OpenF1 API, which will be used to analyze pitstops
 
@@ -83,5 +93,4 @@ if (resp$status_code != 200) {
 
 text <- httr::content(resp, "text", encoding = "UTF-8")
 pitstop_data <- jsonlite::fromJSON(text, simplifyVector = TRUE)
->>>>>>> Stashed changes
 ```
