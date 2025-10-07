@@ -33,7 +33,7 @@ Make sure you have R installed along with the required packages:
 ```r
 install.packages(c("tidyverse", "ggplot2", "jsonlite", "httr")) ##subject to change as I research more of what I need
 ```
-
+Lastly, ensure that you have either R-studio, VS Code, or a similar editor installed with the proper extentions needed to interact with R
 ### Usage
 1. Open `F1-API-Setup.rmd` in RStudio
 2. Run the chunks sequentially to fetch and process F1 data
