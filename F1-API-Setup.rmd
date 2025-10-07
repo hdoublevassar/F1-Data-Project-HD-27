@@ -48,6 +48,54 @@ print(session_data)
 ```{r Filter-Sessions}
 ##I am creating a new dataframe that filters the session_data dataframe, isolating just the session type and the year
 race_sessions_2025 <- dplyr::filter(session_data, session_name == "Race", year == 2025) 
+```
 
+#Races per Country
+```{r Races-By-Country}
+# Bar chart showing which countries host the most races
+race_sessions_2025 %>%
+  count(country_name, sort = TRUE) %>%
+  ggplot(aes(x = reorder(country_name, n), y = n, fill = country_name)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(aes(label = n), hjust = -0.3, size = 4) +
+  coord_flip() +
+  scale_fill_viridis_d(option = "plasma") +
+  labs(
+    title = "Number of F1 Races per Country in 2025",
+    x = "Country",
+    y = "Number of Races"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.y = element_text(size = 11)
+  ) +
+  ylim(0, max(table(race_sessions_2025$country_name)) + 0.5)
+```
 
+#Race Distribution by Month
+```{r Races-By-Month}
+# Show how races are distributed across months
+race_sessions_2025 %>%
+  mutate(
+    month = lubridate::month(as.Date(date_start), label = TRUE, abbr = FALSE)
+  ) %>%
+  count(month) %>%
+  ggplot(aes(x = month, y = n, fill = n)) +
+  geom_col() +
+  geom_text(aes(label = n), vjust = -0.5, size = 5, fontface = "bold") +
+  scale_fill_gradient(low = "#440154", high = "#FDE725") +
+  labs(
+    title = "F1 Race Distribution by Month (2025)",
+    subtitle = "When are races most concentrated during the season?",
+    x = "Month",
+    y = "Number of Races"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    panel.grid.major.x = element_blank()
+  )
 ```
