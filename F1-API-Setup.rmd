@@ -50,21 +50,10 @@ print(session_data)
 
 race_sessions_2025 <- dplyr::filter(session_data, session_name == "Race", year == 2025) 
 ```
-
-# This chunk is completely unnecessary currently, but it is could be potentially useful later on so I figured I'd throw it in now lol 
-```{r Meetings-API}
-url_meetings <- "https://api.openf1.org/v1/meetings"
-##Honestly not important, but figured I might as well add it in here in case I need it later
-resp <- httr::GET(url_meetings)
-if (resp$status_code != 200) {
-  stop("Request failed: ", resp$status_code, " — ", httr::content(resp, "text"))
-}
-
-text <- httr::content(resp, "text", encoding = "UTF-8")
-meeting_data <- jsonlite::fromJSON(text, simplifyVector = TRUE)
-print(meeting_data)
+# Adding this chunk to filter down to just race sessions of all time
+```{r Race_Sessions Total}
+race_sessions <- dplyr::filter(session_data, session_name == "Race")
 ```
-
 # This chunk is completely unnecessary currently, but it is could be potentially useful later on so I figured I'd throw it in now lol
 ```{r Meetings-API}
 url_meetings <- "https://api.openf1.org/v1/meetings"
@@ -80,7 +69,6 @@ print(meeting_data)
 ```
 
 # This chunk is intended to retreave all pitstop data from the OpenF1 API, which will be used to analyze pitstops
-
 # For pitstops:
 ```{r Pitstops-API}
 #Creating a new dataframe for pitstop data
@@ -93,4 +81,26 @@ if (resp$status_code != 200) {
 
 text <- httr::content(resp, "text", encoding = "UTF-8")
 pitstop_data <- jsonlite::fromJSON(text, simplifyVector = TRUE)
+```
+
+
+# Finding the Unique IDs for all Race Sessions I have data for
+```{r Unique-Session-IDs}
+unique_race_session_ids <- unique(race_sessions$session_key)
+print(unique_race_session_ids)
+```
+# Then I am filtering the pitstop data to only include pitstops from those sessions
+```{r Pitstop-Race-Only}
+pitstop_race_only <- dplyr::filter(pitstop_data, session_key %in% unique_race_session_ids)
+
+#Now I am going to rilter the data down to pitstops under 60 seconds, and I will call anything longer than that a DNF
+
+```
+# I am going to create a graph of all pitstops that I have data for, breaking it down by driver and calculating the average pitstop length
+```{r pitstop analysis}
+pitstop_averages <- pitstop_data %>%
+  group_by(driver_number) %>%
+  summarise(average_pitstop_time = mean(pit_duration, na.rm = TRUE)) %>%
+  arrange(average_pitstop_time)
+
 ```
