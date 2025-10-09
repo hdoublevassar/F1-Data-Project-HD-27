@@ -93,14 +93,16 @@ print(unique_race_session_ids)
 ```{r Pitstop-Race-Only}
 pitstop_race_only <- dplyr::filter(pitstop_data, session_key %in% unique_race_session_ids)
 
-#Now I am going to rilter the data down to pitstops under 60 seconds, and I will call anything longer than that a DNF
+#Now I am going to filter the data down to pitstops under 60 seconds, and I will call anything longer than that a DNF
 
+pitstop_race_only <- pitstop_race_only %>% 
+  mutate(is_dnf = pit_duration >= 60) %>%
+  mutate(pit_duration_clean = ifelse(pit_duration >= 60, NA, pit_duration))
 ```
 # I am going to create a graph of all pitstops that I have data for, breaking it down by driver and calculating the average pitstop length
 ```{r pitstop analysis}
 pitstop_averages <- pitstop_data %>%
   group_by(driver_number) %>%
-  summarise(average_pitstop_time = mean(pit_duration, na.rm = TRUE)) %>%
+  summarise(average_pitstop_time = mean(pitstop_race_only$pit_duration_clean, na.rm = TRUE)) %>%
   arrange(average_pitstop_time)
-
-```
+  ```
