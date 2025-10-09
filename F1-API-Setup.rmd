@@ -13,8 +13,6 @@ output:
         google: Proza Libre
       version: 3
 ---
-
-
 ```{r Libraries}
 library(tidyverse)
 library(ggplot2)
@@ -44,7 +42,7 @@ session_data <- jsonlite::fromJSON(text, simplifyVector = TRUE)
 print(session_data)
 ```
 
-#Filtering down to just Race Sessions in the Year  2025
+# Filtering down to just Race Sessions in the Year  2025
 ```{r Filter-Sessions}
 ##I am creating a new dataframe that 2025-filters the session_data dataframe, isolating just the session type and the year
 
@@ -100,9 +98,27 @@ pitstop_race_only <- pitstop_race_only %>%
   mutate(pit_duration_clean = ifelse(pit_duration >= 60, NA, pit_duration))
 ```
 # I am going to create a graph of all pitstops that I have data for, breaking it down by driver and calculating the average pitstop length
-```{r pitstop analysis}
+```{r Pitstop-Analysis}
 pitstop_averages <- pitstop_data %>%
   group_by(driver_number) %>%
   summarise(average_pitstop_time = mean(pitstop_race_only$pit_duration_clean, na.rm = TRUE)) %>%
   arrange(average_pitstop_time)
   ```
+
+```{r Attatching-Driver-Names}
+
+
+
+
+
+
+```
+
+
+
+  ```{r Pitstop_Averages-Visualizations}
+
+
+
+
+```
