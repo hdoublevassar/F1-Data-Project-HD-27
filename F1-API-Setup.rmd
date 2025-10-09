@@ -41,7 +41,6 @@ text <- httr::content(resp, "text", encoding = "UTF-8")
 session_data <- jsonlite::fromJSON(text, simplifyVector = TRUE)
 print(session_data)
 ```
-
 # Filtering down to just Race Sessions in the Year  2025
 ```{r Filter-Sessions}
 ##I am creating a new dataframe that 2025-filters the session_data dataframe, isolating just the session type and the year
@@ -81,6 +80,19 @@ text <- httr::content(resp, "text", encoding = "UTF-8")
 pitstop_data <- jsonlite::fromJSON(text, simplifyVector = TRUE)
 ```
 
+# Attatching Driver Names to the Numbers
+## First creating a set of driver names (I will be aiming to combine the functions so that I do not need to have multiple chunks to complete one action in the future)
+```{r Driver_Names}
+url_driver_names <- "https://api.openf1.org/v1/drivers"
+
+resp <- httr::GET(url_driver_names)
+if(resp$status_code != 200) {
+  stop("Request failed: ",resp$status_code, " — ", httr::content(resp, "text"))
+}
+
+text <- httr::content(resp, "text", encoding = "UTF-8")
+driver_names <- jsonlite::fromJSON(text, simplifyVector = TRUE)
+```
 
 # Finding the Unique IDs for all Race Sessions I have data for
 ```{r Unique-Session-IDs}
@@ -98,26 +110,24 @@ pitstop_race_only <- pitstop_race_only %>%
   mutate(pit_duration_clean = ifelse(pit_duration >= 60, NA, pit_duration))
 ```
 # I am going to create a graph of all pitstops that I have data for, breaking it down by driver and calculating the average pitstop length
-```{r Pitstop-Analysis}
-pitstop_averages <- pitstop_data %>%
+```{r Average-Pit}
+pitstop_averages <- pitstop_race_only %>%
   group_by(driver_number) %>%
-  summarise(average_pitstop_time = mean(pitstop_race_only$pit_duration_clean, na.rm = TRUE)) %>%
+  summarise(average_pitstop_time = mean(pit_duration_clean, na.rm = TRUE)) %>%
   arrange(average_pitstop_time)
-  ```
-
-```{r Attatching-Driver-Names}
-
-
-
-
-
-
 ```
 
+```{r Adding-Names}
+driver_names_unique <- driver_names %>%
+  select(driver_number, name_acronym, full_name, team_name, team_colour) %>%
+  distinct(driver_number, .keep_all = TRUE)
 
-
+# Now join safely
+pitstop_averages <- pitstop_averages %>%
+  left_join(driver_names_unique, by = "driver_number")
+```
   ```{r Pitstop_Averages-Visualizations}
-
+# I am going to create a visualization which creates a bar graph, but orders them from slowest to fastest
 
 
 
