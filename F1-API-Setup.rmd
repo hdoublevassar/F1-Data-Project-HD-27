@@ -98,6 +98,7 @@ driver_names <- driver_names %>%
   filter(!(name_acronym == "BOR" & session_key == 9223))
 driver_names <- driver_names %>% 
   filter(!(name_acronym == "BEA" & driver_number %in% c(38, 50)))
+#driver_names <- filter
 ```
 
 # Finding the Unique IDs for all Race Sessions I have data for
