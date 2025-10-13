@@ -156,3 +156,10 @@ ggplot(data = pitstop_averages, aes(x = reorder(name_acronym, average_pitstop_ti
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+```{r Downloading the graph}
+ggsave("pitstop_averages_graph.png", 
+  width = 12, height = 8, 
+  dpi = 900, 
+  units = "in")
+```
