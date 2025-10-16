@@ -1,0 +1,27 @@
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+# Refined Cleaning Methods
+```{r API-Setup, include=FALSE}
+source("F1-API-Setup.r")
+knitr::opts_chunk$set(error=FALSE)
+```
+
+## Session Iscolation
+```{r Session-Iscolation}
+race_sessions <- dplyr::filter(session_data, session_name == "Race")
+race_sessions[!duplicated(race_sessions$session_key)] #Just  procoutionary, in the current state, this does nothing
+```
+
+## Driver Data Cleanup
+```{r Driver-Data}
+
+
+```

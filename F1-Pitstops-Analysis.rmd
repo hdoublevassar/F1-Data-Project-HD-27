@@ -21,7 +21,7 @@ source("F1-API-Setup.r")
 that being that there are two drivers who do not have a race seat in Formula 1 and have never participated outside of 
 practice sessions. Therefore, there are some fundimental errors in my data collection methods that need to be addressed first.
 
-  1. Race Sessions are being specifically targeted so I am going to create a mutated dataframe that only factors Race sessions in
+  1. Race Sessions are being specifically targeted so I am going to create a mutated dataframe that only factors Race sessions
     - This was already done before, but cearly failed to fully iscolate race sessions exculsively, so I need to redo this step
     - Then I need to check for duplicates within the dataframe that could potentially create issues
   2. Iscolating Driver Names and Information
@@ -33,6 +33,17 @@ practice sessions. Therefore, there are some fundimental errors in my data colle
   4. Only once I have confirmed that all data has been properly cleaned, I can move on to creating basic Visualizations
     - I like the idea of creating bar charts to show off the different drivers experiences in the pit, this was a good idea, just suffered from issues with the data before
     - Confirm that only the drivers who have actually been a part of F1 race sessions in the past 3 seasons are listed, I am completely stumped as to why BEG and HIR were included
+  5. So here is the order of the chunks that I will be inputting
+    - First I am going to iscolate the data for the races specifically
+    - Second I create a list with all of the names of drivers in formuala one
+      - I will make sure that it is filtered down to only the drivers who have a full time race seat
+      - Then I will ensure that all associated information is connected to their row in the dataset
+      - I am also going to make sure to sort duplicates, this time by name instead of using the driver numbers, I want to sort by the driver name code
+    - Then the pitstop data will be filtered down to only the race sessions
+      - Driver names will be added to the pitstop data from the race sessions
+      - I may need to reorder this, but adding a unique name list may be helpful for the creation of graphs, though using the dirver name list to identify the pitstops for the drivers
+      - I could also create visualizations by the team performance as well
+
 
 ### Filtering down to just Race Sessions in the Year  2025 and all time sessions
 ```{r Filter-Sessions}
@@ -40,8 +51,6 @@ practice sessions. Therefore, there are some fundimental errors in my data colle
 race_sessions_2025 <- dplyr::filter(session_data, session_name == "Race", year == 2025)
 race_sessions <- dplyr::filter(session_data, session_name == "Race")
 ```
-
-
 
 ### Finding the Unique IDs for all Race Sessions I have data for
 ```{r Unique-Session-IDs}
