@@ -13,9 +13,27 @@ output:
         google: Proza Libre
       version: 3
 ---
-```{r API-Setup, include=false}
+```{r API-Setup}
 source("F1-API-Setup.r")
 ```
+# Refined Data Cleanup
+  So I have created a graph from the method that I used before to clean the data, but I have run into a clear issue, 
+that being that there are two drivers who do not have a race seat in Formula 1 and have never participated outside of 
+practice sessions. Therefore, there are some fundimental errors in my data collection methods that need to be addressed first.
+
+  1. Race Sessions are being specifically targeted so I am going to create a mutated dataframe that only factors Race sessions in
+    - This was already done before, but cearly failed to fully iscolate race sessions exculsively, so I need to redo this step
+    - Then I need to check for duplicates within the dataframe that could potentially create issues
+  2. Iscolating Driver Names and Information
+    - This step needs t be addressed more carefully since there were duplicates of the same drivers based off of driver number last time
+  3. Pitstop Data
+    - Pitstop data needs to be shortened down to soley race sessions
+    - Furthermore, there is a need to remove outlier pitstops and DNFs from the pitstop averages
+    - Only once pitstop data is clean, I can start to calculate pitstop averages per driver
+  4. Only once I have confirmed that all data has been properly cleaned, I can move on to creating basic Visualizations
+    - I like the idea of creating bar charts to show off the different drivers experiences in the pit, this was a good idea, just suffered from issues with the data before
+    - Confirm that only the drivers who have actually been a part of F1 race sessions in the past 3 seasons are listed, I am completely stumped as to why BEG and HIR were included
+
 # Filtering down to just Race Sessions in the Year  2025 and all time sessions
 ```{r Filter-Sessions}
 ##I am creating a new dataframe that 2025-filters the session_data dataframe, isolating just the session type and the year
@@ -23,13 +41,7 @@ race_sessions_2025 <- dplyr::filter(session_data, session_name == "Race", year =
 race_sessions <- dplyr::filter(session_data, session_name == "Race")
 ```
 
-```{r Fix-BOR&BEA-Issues}
-# Remove BOR from session 9223 since it is broken
-driver_names <- driver_names %>%
-  filter(!(name_acronym == "BOR" & session_key == 9223))
-  filter(!(name_acronym == "BEA" & driver_number %in% c(38, 50)))
-#driver_names <- filter
-```
+
 
 # Finding the Unique IDs for all Race Sessions I have data for
 ```{r Unique-Session-IDs}
@@ -53,6 +65,14 @@ pitstop_averages <- pitstop_race_only %>%
   arrange(average_pitstop_time)
 ```
 
+```{r Fix-BOR&BEA-Issues}
+# Remove BOR from session 9223 since it is broken
+driver_names <- driver_names %>%
+  ##filter(!(name_acronym == "BOR" & session_key == 9223))
+  filter(!(name_acronym == "BEA" & driver_number %in% c(38, 50)))
+#driver_names <- filter
+```
+
 ```{r Adding-Names-Teams-Colors}
 driver_names_unique <- driver_names %>%
   select(driver_number, name_acronym, full_name, team_name, team_colour) %>%
@@ -68,7 +88,7 @@ pitstop_averages <- pitstop_averages %>%
   mutate(team_colour = paste0("#", team_colour))
 ```
 
-  ```{r Pitstop_Averages-Visualizations}
+```{r Pitstop_Averages-Visualizations}
 # I am going to create a visualization which creates a bar graph, but orders them from slowest to fastest
 # Filter out drivers with missing team colors
 pitstop_averages <- pitstop_averages %>%
