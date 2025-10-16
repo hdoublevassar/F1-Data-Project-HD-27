@@ -34,7 +34,7 @@ practice sessions. Therefore, there are some fundimental errors in my data colle
     - I like the idea of creating bar charts to show off the different drivers experiences in the pit, this was a good idea, just suffered from issues with the data before
     - Confirm that only the drivers who have actually been a part of F1 race sessions in the past 3 seasons are listed, I am completely stumped as to why BEG and HIR were included
 
-# Filtering down to just Race Sessions in the Year  2025 and all time sessions
+### Filtering down to just Race Sessions in the Year  2025 and all time sessions
 ```{r Filter-Sessions}
 ##I am creating a new dataframe that 2025-filters the session_data dataframe, isolating just the session type and the year
 race_sessions_2025 <- dplyr::filter(session_data, session_name == "Race", year == 2025)
@@ -43,11 +43,11 @@ race_sessions <- dplyr::filter(session_data, session_name == "Race")
 
 
 
-# Finding the Unique IDs for all Race Sessions I have data for
+### Finding the Unique IDs for all Race Sessions I have data for
 ```{r Unique-Session-IDs}
 unique_race_session_ids <- unique(race_sessions$session_key)
 ```
-# Then I am filtering the pitstop data to only include pitstops from those sessions
+### Then I am filtering the pitstop data to only include pitstops from those sessions
 ```{r Pitstop-Race-Only}
 pitstop_race_only <- dplyr::filter(pitstop_data, session_key %in% unique_race_session_ids)
 
@@ -57,14 +57,14 @@ pitstop_race_only <- pitstop_race_only %>%
   mutate(is_dnf = pit_duration >= 60) %>%
   mutate(pit_duration_clean = ifelse(pit_duration >= 60, NA, pit_duration))
 ```
-# I am going to create a graph of all pitstops that I have data for, breaking it down by driver and calculating the average pitstop length
+### I am going to create a graph of all pitstops that I have data for, breaking it down by driver and calculating the average pitstop length
 ```{r Average-Pit}
 pitstop_averages <- pitstop_race_only %>%
   group_by(driver_number) %>%
   summarise(average_pitstop_time = mean(pit_duration_clean, na.rm = TRUE)) %>%
   arrange(average_pitstop_time)
 ```
-
+### Filtering out bad sessions (theoretically)
 ```{r Fix-BOR&BEA-Issues}
 # Remove BOR from session 9223 since it is broken
 driver_names <- driver_names %>%
@@ -73,6 +73,7 @@ driver_names <- driver_names %>%
 #driver_names <- filter
 ```
 
+### Adding Team Colors to the Names
 ```{r Adding-Names-Teams-Colors}
 driver_names_unique <- driver_names %>%
   select(driver_number, name_acronym, full_name, team_name, team_colour) %>%
@@ -83,6 +84,7 @@ pitstop_averages <- pitstop_averages %>%
   left_join(driver_names_unique, by = "driver_number")
 ```
 
+### Added a # to the color codes 
 ```{r Fixed-Color-Codes}
 pitstop_averages <- pitstop_averages %>%
   mutate(team_colour = paste0("#", team_colour))
@@ -107,9 +109,9 @@ ggplot(data = pitstop_averages, aes(x = reorder(name_acronym, average_pitstop_ti
 ```
 
 ```{r Downloading the graph}
-ggsave("pitstop_averages_graph.png", 
-  width = 12, height = 8, 
-  dpi = 900, 
-  units = "in")
+## ggsave("pitstop_averages_graph.png", 
+##  width = 12, height = 8, 
+##  dpi = 900, 
+##  units = "in")
 ```
 
