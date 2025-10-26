@@ -17,11 +17,18 @@ knitr::opts_chunk$set(error=FALSE)
 ## Session Iscolation
 ```{r Session-Iscolation}
 race_sessions <- dplyr::filter(session_data, session_name == "Race")
-race_sessions[!duplicated(race_sessions$session_key)] #Just  procoutionary, in the current state, this does nothing
+race_sessions <- race_sessions[!duplicated(race_sessions$session_key),] #Just  procoutionary, in the current state, this does nothing
 ```
+
 
 ## Driver Data Cleanup
 ```{r Driver-Data}
-
-
+race_drivers_all <- dplyr::filter(driver_names, session_key %in% race_sessions$session_key)
 ```
+
+
+```{r Pitstop-Cleaning}
+pitstop_data <- pitstop_data %>%
+ filter(!is.na(pitstop_data$pit_duration))
+```
+

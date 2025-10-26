@@ -24,8 +24,10 @@ practice sessions. Therefore, there are some fundimental errors in my data colle
   1. Race Sessions are being specifically targeted so I am going to create a mutated dataframe that only factors Race sessions
     - This was already done before, but cearly failed to fully iscolate race sessions exculsively, so I need to redo this step
     - Then I need to check for duplicates within the dataframe that could potentially create issues
+    - Done
   2. Iscolating Driver Names and Information
-    - This step needs t be addressed more carefully since there were duplicates of the same drivers based off of driver number last time
+    - This step needs to be addressed more carefully since there were duplicates of the same drivers based off of driver number last time
+    - Done
   3. Pitstop Data
     - Pitstop data needs to be shortened down to soley race sessions
     - Furthermore, there is a need to remove outlier pitstops and DNFs from the pitstop averages
