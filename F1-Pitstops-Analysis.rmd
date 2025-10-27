@@ -101,6 +101,7 @@ pitstop_averages <- pitstop_averages %>%
   mutate(team_colour = paste0("#", team_colour))
 ```
 
+
 ```{r Pitstop_Averages-Visualizations}
 # I am going to create a visualization which creates a bar graph, but orders them from slowest to fastest
 # Filter out drivers with missing team colors

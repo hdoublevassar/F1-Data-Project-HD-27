@@ -20,15 +20,39 @@ race_sessions <- dplyr::filter(session_data, session_name == "Race")
 race_sessions <- race_sessions[!duplicated(race_sessions$session_key),] #Just  procoutionary, in the current state, this does nothing
 ```
 
-
 ## Driver Data Cleanup
 ```{r Driver-Data}
 race_drivers_all <- dplyr::filter(driver_names, session_key %in% race_sessions$session_key)
 ```
 
+### Finding and Combining
+<!-- ```{r Combining-Driver-Info}
+# Get unique drivers and their most recent number
+recent_drivers <- race_drivers_all %>%
+  arrange(desc(session_key)) %>%
+  group_by(driver_number) %>%
+  slice(1) %>%
+  ungroup()
 
+# For drivers with multiple numbers, keep only the most recent
+drivers_latest_numbers <- recent_drivers %>%
+  group_by(full_name) %>%
+  arrange(desc(session_key)) %>%
+  slice(1) %>%
+  ungroup()
+
+# Update race_drivers_all to only include the latest number for each driver
+race_drivers_all <- race_drivers_all %>%
+  semi_join(drivers_latest_numbers, by = c("full_name", "driver_number"))
+
+# After that I figured I might as well remove this as to minimize the number of useless dataframes laying around
+rm(recent_drivers)
+``` -->
+
+## Pitsop Cleaning
 ```{r Pitstop-Cleaning}
 pitstop_data <- pitstop_data %>%
- filter(!is.na(pitstop_data$pit_duration))
+ filter(!is.na(pitstop_data$pit_duration)) %>%
+ left_join(race_drivers_all, by = c("driver_number"))
 ```
 
