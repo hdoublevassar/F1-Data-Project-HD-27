@@ -33,23 +33,36 @@ race_drivers_all <- dplyr::filter(driver_names, session_key %in% race_sessions$s
 ```
 
 ### Adding Driver Info
-```{r Pitstop-Cleaning}
+```{r Reduction-Driver-Columns}
 limited_drivers <- race_drivers_all %>%
-  select(-c(meeting_key, session_key, broadcast_name, first_name, last_name)) %>%
-  distinct(driver_number, .keep_all = TRUE)
-
-pitstop_data <- pitstop_data %>%
-  filter(!is.na(pit_duration)) %>%
-  left_join(limited_drivers, by = "driver_number")
+  select(-meeting_key, -broadcast_name, -first_name, -last_name)
 ```
-
 ## Pitstop Data Cleaning
 In this section I am cleaning the pitstop_data$pit_duration to remove na values, and outliers.
+### Filtering Down to Race Pitstops
+```{r Race-Pitstops}
+pitstop_data <- pitstop_data %>% 
+  filter(session_key %in% race_sessions$session_key)
+```
+### Joining Driver Information
+```{r Joining}
+pitstop_data <- pitstop_data %>%
+  left_join(limited_drivers, by = c("session_key", "driver_number")) %>%
+  filter(!is.na(pit_duration))
+```
 ### Outlier Determination
-
+Data is tracked from the start of the pitlane to the end, regardless of condition. Under a safety car, all cars are pitted for long periods of time, same is true for a DNF.
+Due to this, I intend to remove all pitstops which exceed 250 seconds first, after which point I will remove the outliers of the remaining set.
+Possible confounding variables: both drive-through and stop-and-go penalties are potentially problematic and will artifically inflate/deflate certain drivers stats.
+```{r Outliers}
+summary(pitstop_data$pit_duration)
+pitstop_data <- pitstop_data[pitstop_data$pit_duration <= 150,]
+pitstop_iqr <- quantile(pitstop_data$pit_duration, 0.75, na.rm = TRUE) - quantile(pitstop_data$pit_duration, 0.25, na.rm = TRUE)
+pitstop_median <- median(pitstop_data$pit_duration, na.rm = TRUE)
+summary(pitstop_data$pit_duration)
+```
+### Cleanup
 ```{r Removing-Na-Values}
 pitstop_data <- pitstop_data %>%
   drop_na(pit_duration)
-
-pitstop_data <- pitstop_data[pitstop_data$pit_duration <= 60,]
 ```
