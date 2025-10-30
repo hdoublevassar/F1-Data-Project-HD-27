@@ -21,38 +21,35 @@ race_sessions <- race_sessions[!duplicated(race_sessions$session_key),] #Just  p
 ```
 
 ## Driver Data Cleanup
+Cleaning up the driver data into a usable state prior to use
+### Fixing Color Codes
+```{r Color-Codes-Fixed}
+driver_names$team_colour <- paste0("#", driver_names$team_colour)
+```
+
+### Filtering to Race Drivers Only
 ```{r Driver-Data}
 race_drivers_all <- dplyr::filter(driver_names, session_key %in% race_sessions$session_key)
 ```
 
-### Finding and Combining
-<!-- ```{r Combining-Driver-Info}
-# Get unique drivers and their most recent number
-recent_drivers <- race_drivers_all %>%
-  arrange(desc(session_key)) %>%
-  group_by(driver_number) %>%
-  slice(1) %>%
-  ungroup()
-
-# For drivers with multiple numbers, keep only the most recent
-drivers_latest_numbers <- recent_drivers %>%
-  group_by(full_name) %>%
-  arrange(desc(session_key)) %>%
-  slice(1) %>%
-  ungroup()
-
-# Update race_drivers_all to only include the latest number for each driver
-race_drivers_all <- race_drivers_all %>%
-  semi_join(drivers_latest_numbers, by = c("full_name", "driver_number"))
-
-# After that I figured I might as well remove this as to minimize the number of useless dataframes laying around
-rm(recent_drivers)
-``` -->
-
-## Pitsop Cleaning
+### Adding Driver Info
 ```{r Pitstop-Cleaning}
+limited_drivers <- race_drivers_all %>%
+  select(-c(meeting_key, session_key, broadcast_name, first_name, last_name)) %>%
+  distinct(driver_number, .keep_all = TRUE)
+
 pitstop_data <- pitstop_data %>%
- filter(!is.na(pitstop_data$pit_duration)) %>%
- left_join(race_drivers_all, by = c("driver_number"))
+  filter(!is.na(pit_duration)) %>%
+  left_join(limited_drivers, by = "driver_number")
 ```
 
+## Pitstop Data Cleaning
+In this section I am cleaning the pitstop_data$pit_duration to remove na values, and outliers.
+### Outlier Determination
+
+```{r Removing-Na-Values}
+pitstop_data <- pitstop_data %>%
+  drop_na(pit_duration)
+
+pitstop_data <- pitstop_data[pitstop_data$pit_duration <= 60,]
+```
