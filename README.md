@@ -5,13 +5,9 @@ This project connects to the [OpenF1 API](https://openf1.org/) using R to retrie
 
 ## Features
  **API Integration**: Forms a direct connection to OpenF1 API for real-time F1 data
- 
  **Data Processing**: Cleans and filters session data, lap times, and driver statistics
- 
  **Visualizations**: Will create compelling charts and graphs using ggplot2
- 
  **Session Analysis**: Focus on race sessions and specific performance metrics, though I intend to create visualizations from qualifying data as well.
- 
  **Pitstop Analysis**: Pitstops will be analyzed as a metric of team performance.
 
 ## Data Sources (Take with a grain of salt, I'm new to this)
@@ -43,11 +39,13 @@ install.packages(c("tidyverse", "ggplot2", "jsonlite", "httr", "remotes", "plotl
 install.packages("openf1r", repos = c('https://coolbutuseless.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 Lastly, ensure that you have either R-studio, VS Code, or a similar editor installed with the proper extentions needed to interact with R
+
 ### Usage
-1. Download ZIP containing current files.
+1. Download ZIP containing current files
 2. Open in RStudio or IDE of choice
-3. Run the chunks sequentially to fetch and process F1 data
-4. Customize filters and visualizations based on your analysis needs (Filter commands are completed using the dyplyr package fromt tidyverse)
+3. Ensure all dependencies (currently only one R Script) are in the same folder
+4. Run the chunks sequentially to fetch and process F1 data
+5. Customize filters and visualizations based on your analysis needs (Filter commands are completed using the dyplyr package from tidyverse)
 
 ## Current Focus
 Currently analyzing 2023-2025 Race Sessions with plans to expand into:
