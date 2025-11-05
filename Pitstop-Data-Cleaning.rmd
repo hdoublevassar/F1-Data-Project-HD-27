@@ -51,16 +51,20 @@ pitstop_data <- pitstop_data %>%
   filter(!is.na(pit_duration))
 ```
 ### Outlier Determination
-Data is tracked from the start of the pitlane to the end, regardless of condition. Under a safety car, all cars are pitted for long periods of time, same is true for a DNF.
-Due to this, I intend to remove all pitstops which exceed 250 seconds first, after which point I will remove the outliers of the remaining set.
-Possible confounding variables: both drive-through and stop-and-go penalties are potentially problematic and will artifically inflate/deflate certain drivers stats.
+- Data is tracked from the start of the pitlane to the end, regardless of condition. Under a safety car, all cars are pitted for long periods of time, same is true for a DNF.
+- Due to this, I intend to remove all pitstops which exceed 150 seconds first, after which point I will remove the outliers of the remaining set.
+- Possible confounding variables: both drive-through and stop-and-go penalties are potentially problematic and will artifically inflate/deflate certain drivers stats.
+- I have not yet confirmed that the drive-through/stop-and-go penalties are being tracked, but 12 seconds is far too short an amount of time in the pitlane. 
 ```{r Outliers}
 summary(pitstop_data$pit_duration)
 pitstop_data <- pitstop_data[pitstop_data$pit_duration <= 150,]
-pitstop_iqr <- quantile(pitstop_data$pit_duration, 0.75, na.rm = TRUE) - quantile(pitstop_data$pit_duration, 0.25, na.rm = TRUE)
+pitstop_duration_Q1 <- quantile(pitstop_data$pit_duration, 0.25, na.rm = TRUE)
+pitstop_duration_Q3 <- quantile(pitstop_data$pit_duration, 0.75, na.rm = TRUE)
+pitstop_iqr <- pitstop_duration_Q3 - pitstop_duration_Q1 #I could also just do this with pitstop_iqr <- IQR(pitstop_data$pit_duration, na.rm = TRUE)
 pitstop_median <- median(pitstop_data$pit_duration, na.rm = TRUE)
 summary(pitstop_data$pit_duration)
 ```
+
 ### Cleanup
 ```{r Removing-Na-Values}
 pitstop_data <- pitstop_data %>%
