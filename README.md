@@ -5,9 +5,13 @@ This project connects to the [OpenF1 API](https://openf1.org/) using R to retrie
 
 ## Features
  **API Integration**: Forms a direct connection to OpenF1 API for real-time F1 data
+ 
  **Data Processing**: Cleans and filters session data, lap times, and driver statistics
+ 
  **Visualizations**: Will create compelling charts and graphs using ggplot2
+ 
  **Session Analysis**: Focus on race sessions and specific performance metrics, though I intend to create visualizations from qualifying data as well.
+ 
  **Pitstop Analysis**: Pitstops will be analyzed as a metric of team performance.
 
 ## Data Sources (Take with a grain of salt, I'm new to this)
