@@ -27,6 +27,7 @@ The project utilizes multiple endpoints from the OpenF1 API:
 - **jsonlite** - JSON data parsing
 - **OpenF1r** - Package directly interacts with OpenF1 API (was not aware it existed at first)
 - **RMarkdown** - Reproducible reporting
+- **Plotly** - Interactive Graphs
 
 ## Getting Started
 
@@ -34,7 +35,7 @@ The project utilizes multiple endpoints from the OpenF1 API:
 Make sure you have R installed along with the required packages:
 
 ```r
-install.packages(c("tidyverse", "ggplot2", "jsonlite", "httr", "remotes")) ##subject to change as I research more of what I need
+install.packages(c("tidyverse", "ggplot2", "jsonlite", "httr", "remotes", "plotly")) ##subject to change as I research more of what I need
 install.packages("openf1r", repos = c('https://coolbutuseless.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 Lastly, ensure that you have either R-studio, VS Code, or a similar editor installed with the proper extentions needed to interact with R
