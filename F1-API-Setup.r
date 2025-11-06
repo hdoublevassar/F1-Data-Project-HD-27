@@ -3,6 +3,7 @@ library(ggplot2)
 library(jsonlite)
 library(httr)
 library(openf1r)
+library(plotly)
 
     ## Sessions Data Start
 url_sessions <- "https://api.openf1.org/v1/sessions"

@@ -108,7 +108,7 @@ pitstop_averages <- pitstop_averages %>%
 pitstop_averages <- pitstop_averages %>%
   filter(!is.na(team_colour) & team_colour != "#NA")
 
-ggplot(data = pitstop_averages, aes(x = reorder(name_acronym, average_pitstop_time),
+PitPlot <- ggplot(data = pitstop_averages, aes(x = reorder(name_acronym, average_pitstop_time),
                     y = average_pitstop_time,
                     fill = team_colour)) +
   geom_col() +
@@ -118,6 +118,10 @@ ggplot(data = pitstop_averages, aes(x = reorder(name_acronym, average_pitstop_ti
        y = "Average Pitstop Time (seconds)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r Plotly}
+ggplotly(PitPlot)
 ```
 
 ```{r Downloading the graph}
