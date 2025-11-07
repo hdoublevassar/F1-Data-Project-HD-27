@@ -13,121 +13,17 @@ output:
         google: Proza Libre
       version: 3
 ---
-```{r API-Setup}
+```{r API-Setup, include = FALSE}
 source("F1-API-Setup.r")
 ```
-# Refined Data Cleanup
-  So I have created a graph from the method that I used before to clean the data, but I have run into a clear issue, 
-that being that there are two drivers who do not have a race seat in Formula 1 and have never participated outside of 
-practice sessions. Therefore, there are some fundimental errors in my data collection methods that need to be addressed first.
 
-  1. Race Sessions are being specifically targeted so I am going to create a mutated dataframe that only factors Race sessions
-    - This was already done before, but cearly failed to fully iscolate race sessions exculsively, so I need to redo this step
-    - Then I need to check for duplicates within the dataframe that could potentially create issues
-    - Done
-  2. Iscolating Driver Names and Information
-    - This step needs to be addressed more carefully since there were duplicates of the same drivers based off of driver number last time
-    - Done
-  3. Pitstop Data
-    - Pitstop data needs to be shortened down to soley race sessions
-    - Furthermore, there is a need to remove outlier pitstops and DNFs from the pitstop averages
-    - Only once pitstop data is clean, I can start to calculate pitstop averages per driver
-  4. Only once I have confirmed that all data has been properly cleaned, I can move on to creating basic Visualizations
-    - I like the idea of creating bar charts to show off the different drivers experiences in the pit, this was a good idea, just suffered from issues with the data before
-    - Confirm that only the drivers who have actually been a part of F1 race sessions in the past 3 seasons are listed, I am completely stumped as to why BEG and HIR were included
-  5. So here is the order of the chunks that I will be inputting
-    - First I am going to iscolate the data for the races specifically
-    - Second I create a list with all of the names of drivers in formuala one
-      - I will make sure that it is filtered down to only the drivers who have a full time race seat
-      - Then I will ensure that all associated information is connected to their row in the dataset
-      - I am also going to make sure to sort duplicates, this time by name instead of using the driver numbers, I want to sort by the driver name code
-    - Then the pitstop data will be filtered down to only the race sessions
-      - Driver names will be added to the pitstop data from the race sessions
-      - I may need to reorder this, but adding a unique name list may be helpful for the creation of graphs, though using the dirver name list to identify the pitstops for the drivers
-      - I could also create visualizations by the team performance as well
+# Pitstops Statistical Analysis
+In order to undertsnad the operational efficiency of a team, you first need to consider the 
 
 
-### Filtering down to just Race Sessions in the Year  2025 and all time sessions
-```{r Filter-Sessions}
-##I am creating a new dataframe that 2025-filters the session_data dataframe, isolating just the session type and the year
-race_sessions_2025 <- dplyr::filter(session_data, session_name == "Race", year == 2025)
-race_sessions <- dplyr::filter(session_data, session_name == "Race")
+
+
+
+```{r}
+write.csv(pitstop_data, file = "pitstop_data.csv", row.names = FALSE)
 ```
-
-### Finding the Unique IDs for all Race Sessions I have data for
-```{r Unique-Session-IDs}
-unique_race_session_ids <- unique(race_sessions$session_key)
-```
-### Then I am filtering the pitstop data to only include pitstops from those sessions
-```{r Pitstop-Race-Only}
-pitstop_race_only <- dplyr::filter(pitstop_data, session_key %in% unique_race_session_ids)
-
-#Now I am going to filter the data down to pitstops under 60 seconds, and I will call anything longer than that a DNF
-
-pitstop_race_only <- pitstop_race_only %>% 
-  mutate(is_dnf = pit_duration >= 60) %>%
-  mutate(pit_duration_clean = ifelse(pit_duration >= 60, NA, pit_duration))
-```
-### I am going to create a graph of all pitstops that I have data for, breaking it down by driver and calculating the average pitstop length
-```{r Average-Pit}
-pitstop_averages <- pitstop_race_only %>%
-  group_by(driver_number) %>%
-  summarise(average_pitstop_time = mean(pit_duration_clean, na.rm = TRUE)) %>%
-  arrange(average_pitstop_time)
-```
-### Filtering out bad sessions (theoretically)
-```{r Fix-BOR&BEA-Issues}
-# Remove BOR from session 9223 since it is broken
-driver_names <- driver_names %>%
-  ##filter(!(name_acronym == "BOR" & session_key == 9223))
-  filter(!(name_acronym == "BEA" & driver_number %in% c(38, 50)))
-#driver_names <- filter
-```
-
-### Adding Team Colors to the Names
-```{r Adding-Names-Teams-Colors}
-driver_names_unique <- driver_names %>%
-  select(driver_number, name_acronym, full_name, team_name, team_colour) %>%
-  distinct(driver_number, .keep_all = TRUE)
-
-# Now join safely
-pitstop_averages <- pitstop_averages %>%
-  left_join(driver_names_unique, by = "driver_number")
-```
-
-### Added a # to the color codes 
-```{r Fixed-Color-Codes}
-pitstop_averages <- pitstop_averages %>%
-  mutate(team_colour = paste0("#", team_colour))
-```
-
-
-```{r Pitstop_Averages-Visualizations}
-# I am going to create a visualization which creates a bar graph, but orders them from slowest to fastest
-# Filter out drivers with missing team colors
-pitstop_averages <- pitstop_averages %>%
-  filter(!is.na(team_colour) & team_colour != "#NA")
-
-PitPlot <- ggplot(data = pitstop_averages, aes(x = reorder(name_acronym, average_pitstop_time),
-                    y = average_pitstop_time,
-                    fill = team_colour)) +
-  geom_col() +
-  scale_fill_identity() +
-  labs(title = "Average Pitstop Times by Driver",
-       x = "Driver",
-       y = "Average Pitstop Time (seconds)") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-
-```{r Plotly}
-ggplotly(PitPlot)
-```
-
-```{r Downloading the graph}
-## ggsave("pitstop_averages_graph.png", 
-##  width = 12, height = 8, 
-##  dpi = 900, 
-##  units = "in")
-```
-

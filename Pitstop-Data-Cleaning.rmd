@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Pitstop Data Cleaning"
+author: "Hudson Double"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -22,9 +22,20 @@ race_sessions <- race_sessions[!duplicated(race_sessions$session_key),] #Just  p
 
 ## Driver Data Cleanup
 Cleaning up the driver data into a usable state prior to use
+### Merging RB and Racing Bulls
+```{r Merging RB and Racing Bulls}
+driver_names <- driver_names %>%
+  mutate(team_name = ifelse(team_name == "RB", "Racing Bulls", team_name))
+```
+
 ### Fixing Color Codes
 ```{r Color-Codes-Fixed}
 driver_names$team_colour <- paste0("#", driver_names$team_colour)
+
+driver_names <- driver_names %>%
+  group_by(team_name) %>%
+  mutate(team_colour = first(team_colour)) %>%
+  ungroup()
 ```
 
 ### Filtering to Race Drivers Only
@@ -53,8 +64,6 @@ pitstop_data <- pitstop_data %>%
 ### Outlier Determination
 - Data is tracked from the start of the pitlane to the end, regardless of condition. Under a safety car, all cars are pitted for long periods of time, same is true for a DNF.
 - Due to this, I intend to remove all pitstops which exceed 150 seconds first, after which point I will remove the outliers of the remaining set.
-- Possible confounding variables: both drive-through and stop-and-go penalties are potentially problematic and will artifically inflate/deflate certain drivers stats.
-- I have not yet confirmed that the drive-through/stop-and-go penalties are being tracked, but 12 seconds is far too short an amount of time in the pitlane. 
 ```{r Outliers}
 summary(pitstop_data$pit_duration)
 pitstop_data <- pitstop_data[pitstop_data$pit_duration <= 150,]
@@ -63,10 +72,47 @@ pitstop_duration_Q3 <- quantile(pitstop_data$pit_duration, 0.75, na.rm = TRUE)
 pitstop_iqr <- pitstop_duration_Q3 - pitstop_duration_Q1 #I could also just do this with pitstop_iqr <- IQR(pitstop_data$pit_duration, na.rm = TRUE)
 pitstop_median <- median(pitstop_data$pit_duration, na.rm = TRUE)
 summary(pitstop_data$pit_duration)
+
+pitstop_data <- pitstop_data %>%
+  filter(pit_duration >= (pitstop_duration_Q1 - 1.5 * pitstop_iqr) & 
+         pit_duration <= (pitstop_duration_Q3 + 1.5 * pitstop_iqr))
+``` 
+
+## Pitstop Averages
+```{r Pitstop Averages, include = FALSE}
+
+
+
+
 ```
 
-### Cleanup
-```{r Removing-Na-Values}
-pitstop_data <- pitstop_data %>%
-  drop_na(pit_duration)
+## Plotting the Results
+First off I am creating a demonstration of an interactive set of stacked boxplots. This will not be free of issues yet, but this is the begining of me designing visualizations. 
+```{r Plotting-Pitstops, include = FALSE}
+PitPlot <- ggplot(pitstop_data, aes(date, pit_duration, colour = team_colour)) + 
+  geom_point()+ 
+  theme_bw()+
+  labs(title = "Pitstops Over Time", x = "Date and Time", y  = "Pit Durations")+
+  theme(theme(axis.text.x = element_text(angle = 45, hjust = 1)))+
+  scale_fill_identity()+
+  options(viewer = NULL)
+
+
+#ggplotly(PitPlot)
 ```
+
+
+```{r Pit-Boxplots, fig.width=12, fig.height=7, out.width='100%', out.height='600px', fig.align='center'}
+TeamBoxplot <- ggplot(pitstop_data, aes(x = reorder(team_name, pit_duration, median), y = pit_duration, fill = team_colour)) +
+  geom_boxplot(alpha = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.2, alpha = 0.3, color = "black") +
+  coord_flip() +
+  labs(title = "Pit Stop Duration by Team", x = "Team", y = "Pit Stop Duration (s)") +
+  theme_bw()+
+  theme(legend.position = "none")+ 
+  scale_fill_identity()
+
+ggplotly(TeamBoxplot, width = 1200, height = 700) %>%
+  layout(autosize = TRUE)
+```
+
