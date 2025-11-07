@@ -113,7 +113,7 @@ TeamBoxplot <- ggplot(pitstop_data, aes(x = reorder(team_name, pit_duration, med
   theme(legend.position = "none")+ 
   scale_fill_identity()
 
-ggplotly(TeamBoxplot, width = 1200, height = 700) %>%
+ggplotly(TeamBoxplot, width = 1200, height = 700, align="center") %>%
   layout(autosize = TRUE)
 ```
 
