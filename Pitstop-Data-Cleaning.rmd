@@ -14,7 +14,7 @@ source("F1-API-Setup.r")
 knitr::opts_chunk$set(error=FALSE)
 ```
 
-## Session Iscolation
+## Session Isolation
 ```{r Session-Iscolation}
 race_sessions <- dplyr::filter(session_data, session_name == "Race")
 race_sessions <- race_sessions[!duplicated(race_sessions$session_key),] #Just  procoutionary, in the current state, this does nothing
@@ -22,6 +22,7 @@ race_sessions <- race_sessions[!duplicated(race_sessions$session_key),] #Just  p
 
 ## Driver Data Cleanup
 Cleaning up the driver data into a usable state prior to use
+
 ### Merging RB and Racing Bulls
 ```{r Merging RB and Racing Bulls}
 driver_names <- driver_names %>%
