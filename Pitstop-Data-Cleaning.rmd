@@ -74,35 +74,26 @@ pitstop_iqr <- pitstop_duration_Q3 - pitstop_duration_Q1 #I could also just do t
 pitstop_median <- median(pitstop_data$pit_duration, na.rm = TRUE)
 summary(pitstop_data$pit_duration)
 
-pitstop_data <- pitstop_data %>%
-  filter(pit_duration >= (pitstop_duration_Q1 - 1.5 * pitstop_iqr) & 
-         pit_duration <= (pitstop_duration_Q3 + 1.5 * pitstop_iqr))
+# pitstop_data <- pitstop_data %>%
+#   filter(pit_duration >= (pitstop_duration_Q1 - 1.5 * pitstop_iqr) & 
+#          pit_duration <= (pitstop_duration_Q3 + 1.5 * pitstop_iqr))
 ``` 
 
 ## Pitstop Averages
 ```{r Pitstop Averages, include = FALSE}
+pitstop_average <- pitstop_data %>%
+  group_by(name_acronym, team_name) %>%
+  summarise(Mean = mean(pit_duration, na.rm = TRUE))
 
-
-
-
+pitstop_average <- pitstop_average %>%
+  left_join(pitstop_data %>% 
+              select(team_name, team_colour) %>% 
+              distinct(), 
+            by = "team_name")
 ```
 
 ## Plotting the Results
-First off I am creating a demonstration of an interactive set of stacked boxplots. This will not be free of issues yet, but this is the begining of me designing visualizations. 
-```{r Plotting-Pitstops, include = FALSE}
-PitPlot <- ggplot(pitstop_data, aes(date, pit_duration, colour = team_colour)) + 
-  geom_point()+ 
-  theme_bw()+
-  labs(title = "Pitstops Over Time", x = "Date and Time", y  = "Pit Durations")+
-  theme(theme(axis.text.x = element_text(angle = 45, hjust = 1)))+
-  scale_fill_identity()+
-  options(viewer = NULL)
-
-
-#ggplotly(PitPlot)
-```
-
-
+Using the Results I have previously gathered, this section will contain several plots created form the aggregated data points
 ```{r Pit-Boxplots, fig.width=12, fig.height=7, out.width='100%', out.height='600px', fig.align='center'}
 TeamBoxplot <- ggplot(pitstop_data, aes(x = reorder(team_name, pit_duration, median), y = pit_duration, fill = team_colour)) +
   geom_boxplot(alpha = 0.6, outlier.shape = NA) +
@@ -113,7 +104,23 @@ TeamBoxplot <- ggplot(pitstop_data, aes(x = reorder(team_name, pit_duration, med
   theme(legend.position = "none")+ 
   scale_fill_identity()
 
-ggplotly(TeamBoxplot, width = 1200, height = 700, align="center") %>%
+ggplotly(TeamBoxplot, width = 1200, height = 700, align='center') %>%
   layout(autosize = TRUE)
 ```
 
+
+### Plotting Avergaes 
+```{r Average_Plotting}
+AveragesGraph <- ggplot(pitstop_average, aes(x = reorder(name_acronym, -value), y = Mean, fill = team_colour))+
+geom_col()+
+labs(x = "Name Acronyms", y = "Mean (s)", title = "Averages Plot")
+
+ggplotly(AveragesGraph)
+```
+
+
+### Mean Deviation VS. Duration Trends Graph
+```{r Mean-Deviation}
+
+
+```

@@ -22,10 +22,3 @@ In order to undertsnad the operational efficiency of a team, you first need to c
 
 
 
-
-
-```{r}
-write.csv(pitstop_data, file = "pitstop_data_full.csv", row.names = FALSE)
-```
-
-
