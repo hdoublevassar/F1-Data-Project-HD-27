@@ -6,6 +6,9 @@ output:
   html_document:
     theme: yeti
     toc: true
+    toc_float: true
+    number_sections: true
+    highlight: tango
 ---
 # Refined Cleaning Methods
 ```{r API-Setup, include=FALSE}
@@ -118,9 +121,9 @@ ggplotly(TeamBoxplot, width = 1200, height = 700) %>%
 
 ### Plotting Avergaes 
 ```{r Average_Plotting}
-AveragesGraph <- ggplot(pitstop_average, aes(x = reorder(driver_label, Mean), y = Mean, fill = team_colour))+
+AveragesGraph <- ggplot(pitstop_average, aes(x = reorder(driver_label, Mean), y = Mean, fill = team_name))+
   geom_col()+
-  scale_fill_identity()+
+  scale_fill_manual(values = setNames(pitstop_average$team_colour, pitstop_average$team_name))+
   labs(x = "Name Acronyms", y = "Mean (s)", title = "Averages Plot")+
   theme(text = element_text(angle = 45, hjust = 1))
 
