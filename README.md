@@ -4,11 +4,11 @@
 This project connects to the [OpenF1 API](https://openf1.org/) using R to retrieve, process, and visualize Formula 1 race data. My goal for this project is to create reproducable and ensightful visualizations from the data. Assuming OpenF1 continues its maintainence of the data, all of the code found in this project should be easily modified and reused even in future seasons. The final presentation created from the data will be listed on the Final Presentation branch which will be created upon completion. 
 
 ## Features
- **API Integration**: Forms a direct connection to OpenF1 API for real-time F1 data
- **Data Processing**: Cleans and filters session data, lap times, and driver statistics
- **Visualizations**: Will create compelling charts and graphs using ggplot2
- **Session Analysis**: Focus on race sessions and specific performance metrics, though I intend to create visualizations from qualifying data as well.
- **Pitstop Analysis**: Pitstops will be analyzed as a metric of team performance.
+ - **API Integration**: Forms a direct connection to OpenF1 API for real-time F1 data
+ - **Data Processing**: Cleans and filters session data, lap times, and driver statistics
+ - **Visualizations**: Will create compelling charts and graphs using ggplot2
+ - **Session Analysis**: Focus on race sessions and specific performance metrics, though I intend to create visualizations from qualifying data as well.
+ - **Pitstop Analysis**: Pitstops will be analyzed as a metric of team performance.
 
 ## Data Sources (Take with a grain of salt, I'm new to this)
 The project utilizes multiple endpoints from the OpenF1 API:
@@ -35,7 +35,7 @@ The project utilizes multiple endpoints from the OpenF1 API:
 Make sure you have R installed along with the required packages:
 
 ```r
-install.packages(c("tidyverse", "ggplot2", "jsonlite", "httr", "remotes", "plotly")) ##subject to change as I research more of what I need
+install.packages(c("tidyverse", "ggplot2", "jsonlite", "httr", "remotes", "plotly", "bslib")) ##subject to change as I research more of what I need
 install.packages("openf1r", repos = c('https://coolbutuseless.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 Lastly, ensure that you have either R-studio, VS Code, or a similar editor installed with the proper extentions needed to interact with R
