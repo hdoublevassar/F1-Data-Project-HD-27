@@ -4,6 +4,8 @@ library(jsonlite)
 library(httr)
 library(openf1r)
 library(plotly)
+library(bslib)
+
 
     ## Sessions Data Start
 url_sessions <- "https://api.openf1.org/v1/sessions"

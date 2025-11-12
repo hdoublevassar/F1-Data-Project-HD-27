@@ -2,11 +2,10 @@
 title: "Pitstop Data Cleaning"
 author: "Hudson Double"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: 
+  html_document:
+    theme: yeti
+    toc: true
 ---
 # Refined Cleaning Methods
 ```{r API-Setup, include=FALSE}
@@ -90,6 +89,11 @@ pitstop_average <- pitstop_average %>%
               select(team_name, team_colour) %>% 
               distinct(), 
             by = "team_name")
+
+pitstop_average <- pitstop_average %>%
+  group_by(name_acronym) %>%
+  mutate(driver_label = if(n() > 1) paste0(name_acronym, " (", row_number(), ")") else name_acronym) %>%
+  ungroup()
 ```
 
 ## Plotting the Results
@@ -99,23 +103,29 @@ TeamBoxplot <- ggplot(pitstop_data, aes(x = reorder(team_name, pit_duration, med
   geom_boxplot(alpha = 0.6, outlier.shape = NA) +
   geom_jitter(width = 0.2, alpha = 0.3, color = "black") +
   coord_flip() +
+  scale_y_continuous(limits = c(quantile(pitstop_data$pit_duration, 0.02, na.rm = TRUE), 
+                                 quantile(pitstop_data$pit_duration, 0.97, na.rm = TRUE)),
+                    oob = scales::oob_keep) + #looked up this command
   labs(title = "Pit Stop Duration by Team", x = "Team", y = "Pit Stop Duration (s)") +
   theme_bw()+
   theme(legend.position = "none")+ 
   scale_fill_identity()
 
-ggplotly(TeamBoxplot, width = 1200, height = 700, align='center') %>%
+ggplotly(TeamBoxplot, width = 1200, height = 700) %>%
   layout(autosize = TRUE)
 ```
 
 
 ### Plotting Avergaes 
 ```{r Average_Plotting}
-AveragesGraph <- ggplot(pitstop_average, aes(x = reorder(name_acronym, -value), y = Mean, fill = team_colour))+
-geom_col()+
-labs(x = "Name Acronyms", y = "Mean (s)", title = "Averages Plot")
+AveragesGraph <- ggplot(pitstop_average, aes(x = reorder(driver_label, Mean), y = Mean, fill = team_colour))+
+  geom_col()+
+  scale_fill_identity()+
+  labs(x = "Name Acronyms", y = "Mean (s)", title = "Averages Plot")+
+  theme(text = element_text(angle = 45, hjust = 1))
 
-ggplotly(AveragesGraph)
+ggplotly(AveragesGraph, width = 1200, height = 700) %>%
+  layout(autosize = TRUE)
 ```
 
 
