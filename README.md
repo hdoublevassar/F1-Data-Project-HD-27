@@ -3,14 +3,14 @@
 ## Overview
 This project connects to the [OpenF1 API](https://openf1.org/) using R to retrieve, process, and visualize Formula 1 race data. My goal is to create reproducible and insightful visualizations from Formula One datasets. Assuming OpenF1 continues its maintenance of the data, all of the code found in this project should be easily modified and reused even in future seasons. The final presentation created from the data will be listed on the Final Presentation branch which will be created upon completion. 
 
-## Features
+## Features (Take with a grain of salt, I'm new to this)
  - **API Integration**: Forms a direct connection to OpenF1 API for real-time F1 data
  - **Data Processing**: Cleans and filters session data, lap times, and driver statistics
  - **Visualizations**: Will create compelling charts and graphs using ggplot2
  - **Session Analysis**: Focus on race sessions and specific performance metrics, though I intend to create visualizations from qualifying data as well.
  - **Pitstop Analysis**: Pitstops will be analyzed as a metric of team performance.
 
-## Data Sources (Take with a grain of salt, I'm new to this)
+## Data Sources
 The project utilizes multiple endpoints from the OpenF1 API:
 - **Pitstops**: Pitstop timing data
 - **Sessions**: Race weekend session information
