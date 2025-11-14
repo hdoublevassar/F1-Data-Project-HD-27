@@ -1,7 +1,7 @@
 # Formula One Data Visualization Project: Performance Metric Breakdown
 
 ## Overview
-This project connects to the [OpenF1 API](https://openf1.org/) using R to retrieve, process, and visualize Formula 1 race data. My goal is to create reproducible and insightful visualizations from Formula One datasets. Assuming OpenF1 continues its maintainence of the data, all of the code found in this project should be easily modified and reused even in future seasons. The final presentation created from the data will be listed on the Final Presentation branch which will be created upon completion. 
+This project connects to the [OpenF1 API](https://openf1.org/) using R to retrieve, process, and visualize Formula 1 race data. My goal is to create reproducible and insightful visualizations from Formula One datasets. Assuming OpenF1 continues its maintenance of the data, all of the code found in this project should be easily modified and reused even in future seasons. The final presentation created from the data will be listed on the Final Presentation branch which will be created upon completion. 
 
 ## Features
  - **API Integration**: Forms a direct connection to OpenF1 API for real-time F1 data
