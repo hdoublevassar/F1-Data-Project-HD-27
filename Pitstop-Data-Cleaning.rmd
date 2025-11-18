@@ -133,7 +133,27 @@ ggplotly(AveragesGraph, width = 1200, height = 700) %>%
 
 
 ### Mean Deviation VS. Duration Trends Graph
+Scatterplot with mean_deviation trends included
 ```{r Mean-Deviation}
+pitstop_data <- pitstop_data %>%
+  group_by(session_key) %>%
+  mutate(mean_deviation = pit_duration - mean(pit_duration, na.rm = TRUE)) %>%
+  ungroup()
+
+mean_deviation_seconds <- ggplot(pitstop_data, aes(x = pit_duration, y = mean_deviation, color = team_name)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  scale_color_manual(values = setNames(pitstop_data$team_colour, pitstop_data$team_name)) +
+  coord_cartesian(xlim = c(10, 45), ylim = c(-12, 18)) +
+  labs(title = "Mean Deviation VS. Seconds", x = "Seconds", y = "Mean Deviation")
+
+ggsave("Mean_Deviation_Seconds.png", plot = mean_deviation_seconds, width = 12, height = 7, dpi = 1000)
+```
+
+For this section, I am repeating the majority of the same code, but creating a graph of team outcomes by weekend instead, which will provide a much deeper undestanding of where each of the teams do well. 
+```{r Mean-Deviation-Team}
+
+
 
 
 ```
