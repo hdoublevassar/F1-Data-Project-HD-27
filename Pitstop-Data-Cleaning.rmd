@@ -1,0 +1,160 @@
+---
+title: "Pitstop Data Cleaning"
+author: "Hudson Double"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: yeti
+    toc: true
+    toc_float: true
+    number_sections: true
+    highlight: tango
+---
+# Refined Cleaning Methods
+
+```{r API-Setup, include=FALSE}
+source("F1-API-Setup.r")
+knitr::opts_chunk$set(error=FALSE)
+```
+
+## Session Isolation
+```{r Session-Iscolation}
+race_sessions <- dplyr::filter(session_data, session_name == "Race")
+race_sessions <- race_sessions[!duplicated(race_sessions$session_key),] #Just  procoutionary, in the current state, this does nothing
+```
+
+## Driver Data Cleanup
+Cleaning up the driver data into a usable state prior to use
+
+### Merging RB and Racing Bulls
+```{r Merging RB and Racing Bulls}
+driver_names <- driver_names %>%
+  mutate(team_name = ifelse(team_name == "RB", "Racing Bulls", team_name))
+```
+
+### Fixing Color Codes
+```{r Color-Codes-Fixed}
+driver_names$team_colour <- paste0("#", driver_names$team_colour)
+
+driver_names <- driver_names %>%
+  group_by(team_name) %>%
+  mutate(team_colour = first(team_colour)) %>%
+  ungroup()
+```
+
+### Filtering to Race Drivers Only
+```{r Driver-Data}
+race_drivers_all <- dplyr::filter(driver_names, session_key %in% race_sessions$session_key)
+```
+
+### Adding Driver Info
+```{r Reduction-Driver-Columns}
+limited_drivers <- race_drivers_all %>%
+  select(-meeting_key, -broadcast_name, -first_name, -last_name)
+```
+## Pitstop Data Cleaning
+In this section I am cleaning the pitstop_data$pit_duration to remove na values, and outliers.
+### Filtering Down to Race Pitstops
+```{r Race-Pitstops}
+pitstop_data <- pitstop_data %>% 
+  filter(session_key %in% race_sessions$session_key)
+```
+### Joining Driver Information
+```{r Joining}
+pitstop_data <- pitstop_data %>%
+  left_join(limited_drivers, by = c("session_key", "driver_number")) %>%
+  filter(!is.na(pit_duration))
+```
+### Outlier Determination
+- Data is tracked from the start of the pitlane to the end, regardless of condition. Under a safety car, all cars are pitted for long periods of time, same is true for a DNF.
+- Due to this, I intend to remove all pitstops which exceed 150 seconds first, after which point I will remove the outliers of the remaining set.
+```{r Outliers}
+summary(pitstop_data$pit_duration)
+pitstop_data <- pitstop_data[pitstop_data$pit_duration <= 150,]
+pitstop_duration_Q1 <- quantile(pitstop_data$pit_duration, 0.25, na.rm = TRUE)
+pitstop_duration_Q3 <- quantile(pitstop_data$pit_duration, 0.75, na.rm = TRUE)
+pitstop_iqr <- pitstop_duration_Q3 - pitstop_duration_Q1 #I could also just do this with pitstop_iqr <- IQR(pitstop_data$pit_duration, na.rm = TRUE)
+pitstop_median <- median(pitstop_data$pit_duration, na.rm = TRUE)
+summary(pitstop_data$pit_duration)
+
+# pitstop_data <- pitstop_data %>%
+#   filter(pit_duration >= (pitstop_duration_Q1 - 1.5 * pitstop_iqr) & 
+#          pit_duration <= (pitstop_duration_Q3 + 1.5 * pitstop_iqr))
+``` 
+
+## Pitstop Averages
+```{r Pitstop Averages, include = FALSE}
+pitstop_average <- pitstop_data %>%
+  group_by(name_acronym, team_name) %>%
+  summarise(Mean = mean(pit_duration, na.rm = TRUE))
+
+pitstop_average <- pitstop_average %>%
+  left_join(pitstop_data %>% 
+              select(team_name, team_colour) %>% 
+              distinct(), 
+            by = "team_name")
+
+pitstop_average <- pitstop_average %>%
+  group_by(name_acronym) %>%
+  mutate(driver_label = if(n() > 1) paste0(name_acronym, " (", row_number(), ")") else name_acronym) %>%
+  ungroup()
+```
+
+## Plotting the Results
+Using the Results I have previously gathered, this section will contain several plots created form the aggregated data points
+```{r Pit-Boxplots, fig.width=12, fig.height=7, out.width='100%', out.height='600px', fig.align='center'}
+TeamBoxplot <- ggplot(pitstop_data, aes(x = reorder(team_name, pit_duration, median), y = pit_duration, fill = team_colour)) +
+  geom_boxplot(alpha = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.2, alpha = 0.3, color = "black") +
+  coord_flip() +
+  scale_y_continuous(limits = c(quantile(pitstop_data$pit_duration, 0.02, na.rm = TRUE), 
+                                 quantile(pitstop_data$pit_duration, 0.97, na.rm = TRUE)),
+                    oob = scales::oob_keep) + #looked up this command
+  labs(title = "Pit Stop Duration by Team", x = "Team", y = "Pit Stop Duration (s)") +
+  theme_bw()+
+  theme(legend.position = "none")+ 
+  scale_fill_identity()
+
+ggplotly(TeamBoxplot, width = 1200, height = 700) %>%
+  layout(autosize = TRUE)
+```
+
+
+### Plotting Avergaes 
+```{r Average_Plotting}
+AveragesGraph <- ggplot(pitstop_average, aes(x = reorder(driver_label, Mean), y = Mean, fill = team_name))+
+  geom_col()+
+  scale_fill_manual(values = setNames(pitstop_average$team_colour, pitstop_average$team_name))+
+  labs(x = "Name Acronyms", y = "Mean (s)", title = "Averages Plot")+
+  theme(text = element_text(angle = 45, hjust = 1))
+
+ggplotly(AveragesGraph, width = 1200, height = 700) %>%
+  layout(autosize = TRUE)
+```
+
+
+### Mean Deviation VS. Duration Trends Graph
+Scatterplot with mean_deviation trends included
+```{r Mean-Deviation}
+pitstop_data <- pitstop_data %>%
+  group_by(session_key) %>%
+  mutate(mean_deviation = pit_duration - mean(pit_duration, na.rm = TRUE)) %>%
+  ungroup()
+
+mean_deviation_seconds <- ggplot(pitstop_data, aes(x = pit_duration, y = mean_deviation, color = team_name)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  scale_color_manual(values = setNames(pitstop_data$team_colour, pitstop_data$team_name)) +
+  coord_cartesian(xlim = c(10, 45), ylim = c(-12, 18)) +
+  labs(title = "Mean Deviation VS. Seconds", x = "Seconds", y = "Mean Deviation")
+
+ggsave("Mean_Deviation_Seconds.png", plot = mean_deviation_seconds, width = 12, height = 7, dpi = 1000)
+```
+
+For this section, I am repeating the majority of the same code, but creating a graph of team outcomes by weekend instead, which will provide a much deeper undestanding of where each of the teams do well. 
+```{r Mean-Deviation-Team}
+
+
+
+
+```
