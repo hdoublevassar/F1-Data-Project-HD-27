@@ -57,7 +57,7 @@ In this section I am cleaning the pitstop_data$pit_duration to remove na values,
 ### Filtering Down to Race Pitstops
 ```{r Race-Pitstops}
 pitstop_data <- pitstop_data %>% 
-  filter(session_key %in% race_sessions$session_key) 
+  filter(session_key %in% race_sessions$session_key)
 ```
 ### Joining Driver Information
 ```{r Joining}

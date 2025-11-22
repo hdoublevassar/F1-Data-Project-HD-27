@@ -1,0 +1,24 @@
+---
+title: "F1-API-Setup"
+output: 
+  html_document:
+    code_folding: show
+    theme:
+      bg: "#202123"
+      fg: "#B8BCC2"
+      primary: "#EA80FC"
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Proza Libre
+      version: 3
+---
+```{r API-Setup, include = FALSE}
+source("F1-API-Setup.r")
+```
+
+# Pitstops Statistical Analysis
+In order to undertsnad the operational efficiency of a team, you first need to consider the 
+
+
+
