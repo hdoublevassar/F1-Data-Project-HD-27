@@ -117,14 +117,15 @@ pitstop_average <- pitstop_average %>%
 
 ## Plotting the Results
 Using the Results I have previously gathered, this section will contain several plots created form the aggregated data points
+### Boxplot of All Teams
 ```{r Pit-Boxplots, fig.width=12, fig.height=7, out.width='100%', out.height='600px', fig.align='center'}
 TeamBoxplot <- ggplot(pitstop_data, aes(x = reorder(team_name, pit_duration, median), y = pit_duration, fill = team_colour)) +
   geom_boxplot(alpha = 0.6, outlier.shape = NA) +
   geom_jitter(width = 0.2, alpha = 0.3, color = "black") +
   coord_flip() +
   scale_y_continuous(limits = c(quantile(pitstop_data$pit_duration, 0.02, na.rm = TRUE), 
-                                 quantile(pitstop_data$pit_duration, 0.97, na.rm = TRUE)),
-                    oob = scales::oob_keep) + #looked up this command
+    quantile(pitstop_data$pit_duration, 0.97, na.rm = TRUE)),
+      oob = scales::oob_keep) + #looked up this command
   labs(title = "Pit Stop Duration by Team", x = "Team", y = "Pit Stop Duration (s)") +
   theme_bw()+
   theme(legend.position = "none")+ 

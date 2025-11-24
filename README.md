@@ -29,6 +29,36 @@ The project utilizes multiple endpoints from the OpenF1 API:
 - **RMarkdown** - Reproducible reporting
 - **Plotly** - Interactive Graphs
 
+## Pitstop Data Cleaning and Visualization
+
+### Data Cleaning
+1. Using OpenF1 API, multiple dataframes are loaded, including session_data, pitstop_data, driver names, and meeting_data are added to the workspace.
+2. Upon importing data, the dataframe, session_data is filtered down to just Race Sessions in order to asses operational efficiency of each team. Furthermore, the !duplicated function is run to remove duplicates, though it has no impact currently.
+3. Two of the teams, RB and Racing Bulls are merged, since they're used interchangably in the data and they're the exact same team.
+4. The driver_names df has a "#" pasted in front of every value in the team_colour column to make the color codes usable.
+    - Next, team color codes are standardized to the first code provided in the dataset, since each team chnaged colors more than once.
+5. Next the df, race_drivers_all, is created and filters down to only the drivers who have been in race sessions since 2023 when data tracking began.
+    - From race_drivers_all, limited_drivers is created which reduces the dimensions of the dataset by removing meeting_key, brodcast_name, first_name, and last_name to reduce complexity.
+6. Pitstop_data is filtered down to race sessions using the race_sessions data, and NA values are removed, thus the pitstop dataframe only tracks race data.
+7. Then, the data from limeted_drivers is joined by the columns session_key and driver_number, so that corresponding data will match the information of the driver from the specific session.
+    - Country code is removed from the driver information to make way for the country codes of the circuit.
+    - Then the year, circuit_short_name, and country_code are merged by session_key
+8. Outlier determinations and removal posed one of the largest issues for me, because data tracking methods are somewhat opaque. Pit duration is tracked from the start of the pitlane to the end, so this mean pitstop times vary by track.
+    - Seeing as I was aiming to track opperational effieciency, I filtered out stops which lasted longer than 150 seconds, preventing DNFs, penalties, and red-flag stopage time from skewing the data away from normal race conditions.
+    - Previously there had been notable examples of pitstop_durations exceeding 1000 seconds or more, which does not happen under normal racing conditions.
+9. pitstop_averages is created from pitstop_data and it takes the mean of every single drivers pitstop performance, which was later used for a visualization comparing drivers over the past few years.
+10. 
+
+**Work in Progress**
+
+### Main Visualization
+
+![Team Pitstop Performance Boxplots](https://github.com/hdoublevassar/F1-Data-Project-HD-27/blob/main/Team_Boxplots.png)
+
+
+
+
+
 ## Getting Started
 
 ### Prerequisites
@@ -72,6 +102,7 @@ In order to cite this project for future use:
 Double, H (2025). *Formula One Data Visualization Project: Performance Metric Breakdown* [GitHub Repository]. https://github.com/hdoublevassar/F1-Data-Project-HD-27. (Date Accessed **Replace Date**)
 
 ## Acknowledgments
+
 - Data provided by [OpenF1 API](https://openf1.org/)
 - Formula 1 and all related marks are trademarks of Formula One Licensing BV
 - Cheng M (2025). *openf1r: Retrieve Formula 1 Race Data from the OpenF1 API.* R package version 0.1.1, https://github.com/coolbutuseless/openf1r.
