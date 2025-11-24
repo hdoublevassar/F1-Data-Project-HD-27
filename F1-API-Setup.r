@@ -1,10 +1,10 @@
 library(tidyverse)
-library(ggplot2)
 library(jsonlite)
 library(httr)
 library(openf1r)
 library(plotly)
 library(bslib)
+library(zoo)
 
 
     ## Sessions Data Start

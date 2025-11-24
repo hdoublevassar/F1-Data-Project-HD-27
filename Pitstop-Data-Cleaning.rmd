@@ -6,7 +6,6 @@ output:
   html_document:
     theme: yeti
     toc: true
-    toc_float: true
     number_sections: true
     highlight: tango
 ---
@@ -161,10 +160,13 @@ pitstop_data <- pitstop_data %>%
 ```{r Mean-Deviation-Seconds}
 mean_deviation_seconds <- ggplot(pitstop_data, aes(x = pit_duration, y = mean_deviation, color = team_name)) +
   geom_point() +
-  geom_smooth(se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE) +
   scale_color_manual(values = setNames(pitstop_data$team_colour, pitstop_data$team_name)) +
   coord_cartesian(xlim = c(10, 45), ylim = c(-12, 18)) +
   labs(title = "Mean Deviation VS. Seconds", x = "Seconds", y = "Mean Deviation")
+
+ggplotly(mean_deviation_seconds, width = 1200, height = 700) %>%
+  layout(autosize = TRUE)
 
 #ggsave("Mean_Deviation_Seconds.png", plot = mean_deviation_seconds, width = 12, height = 7, dpi = 1000)
 ```
@@ -173,18 +175,6 @@ mean_deviation_seconds <- ggplot(pitstop_data, aes(x = pit_duration, y = mean_de
 ### Mean Deviation by Weekend
 For this section, Mean deviation is beogn tracked by weekend in order to assess team trends over time in order to asses trends in team performance. As a PNG,  this plot looks good, but it isn't readable, but in Plotly, selecting between teams will allow for more clear trends across teams. 
 ```{r Mean-Deviation-Weekend}
-mean_deviation_weekend <- ggplot(pitstop_data, aes(x = interaction(circuit_short_name, year, sep = " "), y = mean_deviation, color = team_name)) +
-  annotate("Rect", xmin = -Inf, xmax = Inf, ymin = 0, ymax = Inf, fill = "red", alpha = 0.1)+
-  geom_point(size = 0.3) +
-  geom_smooth(aes(group = team_name), method = "lm", se = FALSE) +
-  coord_cartesian(ylim = c(-2,2)) +
-  scale_color_manual(name = "Team Name", values = setNames(pitstop_data$team_colour, pitstop_data$team_name)) +
-  labs(title = "Mean Deviation By Weekend", x = "Circuit and Year", y = "Mean Deviation") +
-  theme_minimal() +
-  scale_y_continuous(breaks = seq(-5, 5, by = 1)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggplotly(mean_deviation_weekend)
-
-#ggsave("Mean_Deviation_Weekend.png", plot = mean_deviation_weekend, width = 12, height = 7, dpi = 1000)
 ```
+
