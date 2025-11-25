@@ -32,24 +32,23 @@ The project utilizes multiple endpoints from the OpenF1 API:
 ## Pitstop Data Cleaning and Visualization
 
 ### Data Cleaning
-1. Using OpenF1 API, multiple dataframes are loaded, including session_data, pitstop_data, driver names, and meeting_data are added to the workspace.
-2. Upon importing data, the dataframe, session_data is filtered down to just Race Sessions in order to asses operational efficiency of each team. Furthermore, the !duplicated function is run to remove duplicates, though it has no impact currently.
-3. Two of the teams, RB and Racing Bulls are merged, since they're used interchangably in the data and they're the exact same team.
-4. The driver_names df has a "#" pasted in front of every value in the team_colour column to make the color codes usable.
-    - Next, team color codes are standardized to the first code provided in the dataset, since each team chnaged colors more than once.
-5. Next the df, race_drivers_all, is created and filters down to only the drivers who have been in race sessions since 2023 when data tracking began.
-    - From race_drivers_all, limited_drivers is created which reduces the dimensions of the dataset by removing meeting_key, brodcast_name, first_name, and last_name to reduce complexity.
-6. Pitstop_data is filtered down to race sessions using the race_sessions data, and NA values are removed, thus the pitstop dataframe only tracks race data.
-7. Then, the data from limeted_drivers is joined by the columns session_key and driver_number, so that corresponding data will match the information of the driver from the specific session.
+1. Using the OpenF1 API, multiple dataframes are loaded, including session_data, pitstop_data, driver_names, and meeting_data, which are added to the workspace.
+2. Upon importing data, the session_data dataframe is filtered down to just Race Sessions in order to assess operational efficiency of each team. Furthermore, the !duplicated() function is run to remove duplicates, though it has no impact currently.
+3. Two of the teams, RB and Racing Bulls, are merged since they're used interchangeably in the data and they're the exact same team.
+4. The driver_names dataframe has a "#" pasted in front of every value in the team_colour column to make the color codes usable.
+    - Next, team color codes are standardized to the first code provided in the dataset, since each team changed colors more than once.
+5. Next, the dataframe race_drivers_all is created and filters down to only the drivers who have been in race sessions since 2023 when data tracking began. 
+    - From race_drivers_all, limited_drivers is created, which reduces the dimensions of the dataset by removing meeting_key, broadcast_name, first_name, and last_name to reduce complexity.
+6. Pitstop_data is filtered down to race sessions using the race_sessions data, and NA values are removed; thus, the pitstop dataframe only tracks race data.
+7. Then, the data from limited_drivers is joined by the columns session_key and driver_number so that corresponding data will match the information of the driver from the specific session.
     - Country code is removed from the driver information to make way for the country codes of the circuit.
-    - Then the year, circuit_short_name, and country_code are merged by session_key
-8. Outlier determinations and removal posed one of the largest issues for me, because data tracking methods are somewhat opaque. Pit duration is tracked from the start of the pitlane to the end, so this mean pitstop times vary by track.
-    - Seeing as I was aiming to track opperational effieciency, I filtered out stops which lasted longer than 150 seconds, preventing DNFs, penalties, and red-flag stopage time from skewing the data away from normal race conditions.
-    - Previously there had been notable examples of pitstop_durations exceeding 1000 seconds or more, which does not happen under normal racing conditions.
-9. pitstop_averages is created from pitstop_data and it takes the mean of every single drivers pitstop performance, which was later used for a visualization comparing drivers over the past few years.
-10. 
-
-**Work in Progress**
+    - Then the year, circuit_short_name, and country_code are merged by session_key.
+8. Outlier determination and removal posed one of the largest challenges due to opaque data tracking methods. Pit duration is measured from pitlane entry to exit, meaning pitstop times vary by track layout.
+    - Initially, the $1.5 \times IQR$ method was used to identify outliers, but this approach failed to exclude non-pitstop events such as DNFs, red-flag stoppages, and pre-race stops, which skewed the distribution toward extremely long durations.
+    - A manual threshold of 150 seconds was implemented instead, providing more accurate analysis of in-race pitstop performance while filtering out problematic data points.
+    - As a result, there are no longer examples of pitstops eclipsing 1000 seconds or more, which heavily distorted the data prior to their removal.
+9. pitstop_averages is created from pitstop_data and it takes the mean of every single driver's pitstop performance, which was later used for a visualization comparing drivers over the past few years.
+10. Later on, mean deviation of the sample was calculated and merged to pitstop_data by taking the mean of all pitstop for a session before subtracting the mean from each pitstop_duration.
 
 ### Main Visualization
 
