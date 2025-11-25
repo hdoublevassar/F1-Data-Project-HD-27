@@ -135,6 +135,23 @@ ggplotly(TeamBoxplot, width = 1200, height = 700) %>%
   layout(autosize = TRUE)
 ```
 
+### Same Boxplot, Only 2025
+```{r}
+TeamBoxplot2025 <- ggplot(pitstop_data %>% filter(year == 2025), aes(x = reorder(team_name, pit_duration, median), y = pit_duration, fill = team_colour)) +
+  geom_boxplot(alpha = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.2, alpha = 0.3, color = "black") +
+  coord_flip() +
+  scale_y_continuous(limits = c(quantile(pitstop_data$pit_duration, 0.02, na.rm = TRUE), 
+    quantile(pitstop_data$pit_duration, 0.97, na.rm = TRUE)),
+      oob = scales::oob_keep) + #looked up this command
+  labs(title = "Pit Stop Duration by Team (2025)", x = "Team", y = "Pit Stop Duration (s)") +
+  theme_bw()+
+  theme(legend.position = "none")+ 
+  scale_fill_identity()
+
+ggsave("BoxPlots2025.png", plot = TeamBoxplot2025, width = 12, height = 7, dpi = 1000)
+```
+
 
 ### Plotting Avergaes 
 ```{r Average_Plotting}
@@ -178,4 +195,3 @@ For this section, Mean deviation is beogn tracked by weekend in order to assess 
 ```{r Mean-Deviation-Weekend}
 
 ```
-

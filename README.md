@@ -30,6 +30,8 @@ The project utilizes multiple endpoints from the OpenF1 API:
 - **Plotly** - Interactive Graphs
 
 ## Pitstop Data Cleaning and Visualization
+While I intend for this project to far eclipse the scope of what is shown here long-term, the pitstop analysis portion aims to assess the operational efficiency of different Formula One teams from 2023-present. Essentially, the motivating question is: how do pit stop durations vary across Formula One teams from 2023–present, and which teams demonstrate the highest operational efficiency? In a series where even marginal differences have a massive impact, routine differences in pitstop performance can account for massive gains or losses for a team.
+
 
 ### Data Cleaning
 1. Using the OpenF1 API, multiple dataframes are loaded, including session_data, pitstop_data, driver_names, and meeting_data, which are added to the workspace.
@@ -54,10 +56,15 @@ The project utilizes multiple endpoints from the OpenF1 API:
 
 ![Team Pitstop Performance Boxplots](https://github.com/hdoublevassar/F1-Data-Project-HD-27/blob/main/Team_Boxplots.png)
 
-An interactive version of this graph made with plotly is available in the knit HTML inside of this repository.
+*An interactive version of this graph made with plotly is available in the knit HTML file inside of this repository.*
 
-### Analysis
+The visualization above presents horizontal stacked boxplots representing pitstop performance across teams, with each box colored according to team and arranged in descending order by median pitstop duration. Additionally, the raw pitstop durations are depicted as small dots on the plots. Looking at the graph, the highest performing teams in order are: Racing Bulls, Red Bull Racing, Mercedes, Ferrari, and McLaren. While Racing Bulls has the lowest median pitstop time, the team is relatively new, being formerly known as AlphaTauri, and temporal trends in pitstop performance account for their strong form. Notably, after the Las Vegas Grand Prix on 11/22/2024, Mercedes overtook Ferrari, meaning that this graph looked different just a week ago.
 
+Starting with the lowest performing team, Alfa Romeo (currently Kick Sauber) is a team with a large IQR and significant whiskers, implying that the team was more prone to costly errors. The median pitstop time, while it is the worst of every single team, isn't so terrible that they could be written off entirely, but by every single metric, Alfa Romeo remains the most operationally inefficient team, suffering from costly errors and inconsistency. Other midfield teams like Williams and AlphaTauri suffer from the exact same issues, seeing high variability in their performance and having much wider variance, though not to the same extent. These teams aren't necessarily downright slow, but their performance is completely unreliable.
+
+On the other hand, Haas, Aston Martin, and Alpine represent teams that are somewhat consistent operationally, but their performance is just plain slow. Each of these teams has a much smaller IQR than the previously mentioned midfield competitors, but their lack of pace has meant that they've been consistently slower. While Aston Martin is the least likely of the three teams to have a bad pitstop and most likely to have a quick pitstop, it has a higher median than Alpine.
+
+Kick Sauber presents an interesting case as a team, because they're highly variable, but their median is slowly but surely improving. 
 
 
 
