@@ -54,6 +54,10 @@ The project utilizes multiple endpoints from the OpenF1 API:
 
 ![Team Pitstop Performance Boxplots](https://github.com/hdoublevassar/F1-Data-Project-HD-27/blob/main/Team_Boxplots.png)
 
+An interactive version of this graph made with plotly is available in the knit HTML inside of this repository.
+
+### Analysis
+
 
 
 
