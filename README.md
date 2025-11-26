@@ -51,8 +51,9 @@ While I intend for this project to far eclipse the scope of what is shown here l
     - As a result, there are no longer examples of pitstops eclipsing 1000 seconds or more, which heavily distorted the data prior to their removal.
 9. pitstop_averages is created from pitstop_data and it takes the mean of every single driver's pitstop performance, which was later used for a visualization comparing drivers over the past few years.
 10. Later on, mean deviation of the sample was calculated and merged to pitstop_data by taking the mean of all pitstop for a session before subtracting the mean from each pitstop_duration.
+11. Mean durations were also tracked as a dataset called mean_pit_duration which is grouped by team and year, for use in ordering the teams.
 
-### Main Visualization
+### Main Visualization and Analysis
 
 ![Team Pitstop Performance Boxplots](https://github.com/hdoublevassar/F1-Data-Project-HD-27/blob/main/Team_Boxplots.png)
 
@@ -64,10 +65,17 @@ Starting with the lowest performing team, Alfa Romeo (currently Kick Sauber) is 
 
 On the other hand, Haas, Aston Martin, and Alpine represent teams that are somewhat consistent operationally, but their performance is just plain slow. Each of these teams has a much smaller IQR than the previously mentioned midfield competitors, but their lack of pace has meant that they've been consistently slower. While Aston Martin is the least likely of the three teams to have a bad pitstop and most likely to have a quick pitstop, it has a higher median than Alpine.
 
-Kick Sauber presents an interesting case as a team, because they're highly variable, but their median is slowly but surely improving. 
+![Team Pitstop Performance Boxplots For 2025](https://github.com/hdoublevassar/F1-Data-Project-HD-27/blob/FinalPresentation/BoxPlots2025.png)
 
+*Means are mentioned during this section as well, and a table of every teams mean divided by year is included as a dataset called mean_pit_duration*
 
+Kick Sauber presents an interesting case as a team with high variability but steady year-over-year improvement in median performance. Historically one of the lowest-performing teams operationally, recent improvements have resulted in significant gains compared to the 2024 season. While not displayed in the full dataset chart, Kick's mean pitstop duration decreased from 27.32 seconds in 2024 to 22.8 seconds in 2025 thus far. This substantial performance improvement between seasons explains the wide variance observed across the complete dataset, as earlier data from 2024 showed significantly slower performance before the marked improvements seen throughout 2025. Considering their recent form, even outperforming the likes of Ferrari and McLaren, Kick Sauber is now among the most operationally efficient teams in the sport.
 
+Finally, examining the most operationally efficient teams over the full dataset, Ferrari, Mercedes, Red Bull, and McLaren all demonstrate high efficiency. For this analysis, Racing Bulls is excluded because merging their pitstop durations with AlphaTauri's data significantly increases their median time. Red Bull Racing has been highly efficient but somewhat variable, ranking 7th in mean time among all teams in 2025. Notably, their median time remains the best, indicating that while they experience occasional disastrous pitstops creating high-end variability, they most commonly achieve high-performing stops. Over the past few seasons, McLaren has been a marker of consistency with a small IQR, even when not recording the quickest stops, though the full dataset shows more variation than 2025 alone. Across the complete dataset, Mercedes has a quicker median pitstop duration than both Ferrari and McLaren, though their 2025 season performance has resulted in a wider spread of results. McLaren and Ferrari are more closely matched, with Ferrari holding an advantage over the full dataset. Ferrari demonstrates a lower median duration and a visibly smaller IQR, denoting superior consistency from 2023 to present. 
+
+Formula 1 is a sport defined by marginal gains, where even the smallest improvements can determine success or failure. Pitstops, like every other aspect of the sport, carry enormous weight in race outcomes. As teams evaluate their weaknesses and pursue operational improvements, reducing pitstop errors becomes essential—yet errors remain inevitable. This is a sport where wheel nuts can break, pit releases are blocked by incoming traffic, and unpredictability will always factor into performance, regardless of a team's overall quality.
+
+However, pursuing operational efficiency remains critical to climbing the championship standings. As demonstrated by Kick Sauber's trajectory over the past two years, true team improvement requires advancement across all areas of operation. For Kick Sauber, enhanced pitstop performance has become a cornerstone of their development ahead of their 2026 rebrand to Audi, illustrating how operational excellence in the pit lane directly contributes to a team's broader competitive evolution. In 2024, Kick ended the season in last place with 4 points, and during the 2025 season, they are currently in 9th place, only 5 points behind 7th place rather than finishing miles off the pack.
 
 ## Getting Started
 

@@ -97,6 +97,14 @@ summary(pitstop_data$pit_duration)
 #          pit_duration <= (pitstop_duration_Q3 + 1.5 * pitstop_iqr))
 ``` 
 
+### Finding Mean Pit Durations by Team
+```{r}
+mean_pit_duration <- pitstop_data %>%
+  group_by(team_name, year) %>%
+  summarise(mean_duration = mean(pit_duration, na.rm = TRUE)) %>%
+  ungroup()
+```
+
 ## Pitstop Averages
 ```{r Pitstop Averages, include = FALSE}
 pitstop_average <- pitstop_data %>%
@@ -190,8 +198,4 @@ ggplotly(mean_deviation_seconds, width = 1200, height = 700) %>%
 ```
 
 
-### Mean Deviation by Weekend
-For this section, Mean deviation is beogn tracked by weekend in order to assess team trends over time in order to asses trends in team performance. As a PNG,  this plot looks good, but it isn't readable, but in Plotly, selecting between teams will allow for more clear trends across teams. 
-```{r Mean-Deviation-Weekend}
 
-```
