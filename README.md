@@ -57,7 +57,7 @@ While I intend for this project to far eclipse the scope of what is shown here l
 
 ![Team Pitstop Performance Boxplots](https://github.com/hdoublevassar/F1-Data-Project-HD-27/blob/main/Team_Boxplots.png)
 
-*An interactive version of this graph made with plotly is available in the knit HTML file inside of this repository.*
+*An interactive version of this graph created with Plotly is available in the knit HTML file within this repository. The data depicted is subject to change as new races are completed; running the code independently will reflect the most current results.*
 
 The visualization above presents horizontal stacked boxplots representing pitstop performance across teams, with each box colored according to team and arranged in descending order by median pitstop duration. Additionally, the raw pitstop durations are depicted as small dots on the plots. Looking at the graph, the highest performing teams in order are: Racing Bulls, Red Bull Racing, Mercedes, Ferrari, and McLaren. While Racing Bulls has the lowest median pitstop time, the team is relatively new, being formerly known as AlphaTauri, and temporal trends in pitstop performance account for their strong form. Notably, after the Las Vegas Grand Prix on 11/22/2024, Mercedes overtook Ferrari, meaning that this graph looked different just a week ago.
 
