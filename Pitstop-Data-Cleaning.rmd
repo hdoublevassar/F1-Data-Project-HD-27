@@ -145,6 +145,7 @@ pitstop_average <- pitstop_average %>%
 
 ## Plotting the Results
 Using the Results I have previously gathered, this section will contain several plots created form the aggregated data points
+
 ### Boxplot of All Teams
 ```{r Pit-Boxplots, fig.width=12, fig.height=7, out.width='100%', out.height='600px', fig.align='center'}
 TeamBoxplot <- ggplot(pitstop_data, aes(x = reorder(team_name, pit_duration, median), y = pit_duration, fill = team_colour)) +
@@ -161,6 +162,8 @@ TeamBoxplot <- ggplot(pitstop_data, aes(x = reorder(team_name, pit_duration, med
 
 ggplotly(TeamBoxplot, width = 1200, height = 700) %>%
   layout(autosize = TRUE)
+
+#ggsave("BoxPlots.png", plot = TeamBoxplot, width = 12, height = 7, dpi = 1000)
 ```
 
 ### Same Boxplot, Only 2025
@@ -217,5 +220,18 @@ ggplotly(mean_deviation_seconds, width = 1200, height = 700) %>%
 #ggsave("Mean_Deviation_Seconds.png", plot = mean_deviation_seconds, width = 12, height = 7, dpi = 1000)
 ```
 
+### Mean Deviation by Weekend
+```{r Mean-Deviation-Weekend}
+mean_deviation_weekend <- ggplot(pitstop_data, aes(x = interaction(circuit_short_name, year, sep = " "), y = mean_deviation, color = team_name)) +
+  annotate("Rect", xmin = -Inf, xmax = Inf, ymin = 0, ymax = Inf, fill = "red", alpha = 0.1)+
+  geom_point(size = 0.3) +
+  geom_smooth(aes(group = team_name), method = "lm", se = FALSE) +
+  coord_cartesian(ylim = c(-2,2)) +
+  scale_color_manual(name = "Team Name", values = setNames(pitstop_data$team_colour, pitstop_data$team_name)) +
+  labs(title = "Mean Deviation By Weekend", x = "Circuit and Year", y = "Mean Deviation") +
+  theme_minimal() +
+  scale_y_continuous(breaks = seq(-5, 5, by = 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-
+ggsave("Mean_Deviation_Weekend.png", plot = mean_deviation_weekend, width = 12, height = 7, dpi = 1000)
+```
