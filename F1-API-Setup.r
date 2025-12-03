@@ -3,6 +3,7 @@ library(jsonlite)
 library(httr)
 library(openf1r)
 library(plotly)
+library(gganimate)
 library(bslib)
 library(zoo)
 

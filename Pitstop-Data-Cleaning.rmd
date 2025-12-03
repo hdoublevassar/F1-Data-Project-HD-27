@@ -183,7 +183,6 @@ TeamBoxplot2025 <- ggplot(pitstop_data %>% filter(year == 2025), aes(x = reorder
 ggsave("BoxPlots2025.png", plot = TeamBoxplot2025, width = 12, height = 7, dpi = 1000)
 ```
 
-
 ### Plotting Avergaes 
 ```{r Average_Plotting}
 AveragesGraph <- ggplot(pitstop_average, aes(x = reorder(driver_label, Mean), y = Mean, fill = team_name))+
@@ -237,3 +236,4 @@ mean_deviation_weekend
 
 ggsave("Mean_Deviation_Weekend.png", plot = mean_deviation_weekend, width = 12, height = 7, dpi = 1000)
 ```
+
