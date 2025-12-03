@@ -233,5 +233,7 @@ mean_deviation_weekend <- ggplot(pitstop_data, aes(x = interaction(circuit_short
   scale_y_continuous(breaks = seq(-5, 5, by = 1)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+mean_deviation_weekend
+
 ggsave("Mean_Deviation_Weekend.png", plot = mean_deviation_weekend, width = 12, height = 7, dpi = 1000)
 ```
