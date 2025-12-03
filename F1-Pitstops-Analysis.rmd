@@ -17,8 +17,6 @@ output:
 source("F1-API-Setup.r")
 ```
 
-# Pitstops Statistical Analysis
-In order to undertsnad the operational efficiency of a team, you first need to consider the 
 
 
 
