@@ -55,7 +55,7 @@ While I intend for this project to far eclipse the scope of what is shown here l
 
 ### Main Visualization and Analysis
 
-![Team Pitstop Performance Boxplots](https://github.com/hdoublevassar/F1-Data-Project-HD-27/blob/main/Team_Boxplots.png)
+![Team Pitstop Performance Boxplots](https://github.com/hdoublevassar/F1-Data-Project-HD-27/blob/FinalPresentation/BoxPlots.png)
 
 *An interactive version of this graph created with Plotly is available in the knit HTML file within this repository. The data depicted is subject to change as new races are completed; running the code independently will reflect the most current results.*
 
