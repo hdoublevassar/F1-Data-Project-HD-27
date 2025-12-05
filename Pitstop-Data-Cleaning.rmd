@@ -165,14 +165,14 @@ TeamBoxplot <- ggplot(pitstop_data, aes(
 ggplotly(TeamBoxplot, width = 1200, height = 700) %>%
   layout(autosize = TRUE)
 
-#ggsave("BoxPlots.png", plot = TeamBoxplot, width = 12, height = 7, dpi = 1000)
+ggsave("BoxPlots.png", plot = TeamBoxplot, width = 12, height = 7, dpi = 1000)
 ```
 
 ### Same Boxplot, Only 2025
 ```{r}
 TeamBoxplot2025 <- ggplot(pitstop_data %>% filter(year == 2025), aes(x = reorder(team_name, pit_duration, median), y = pit_duration, fill = team_colour)) +
-  geom_boxplot(alpha = 0.6, outlier.shape = NA) +
-  geom_jitter(width = 0.2, alpha = 0.3, color = "black") +
+  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
+  geom_jitter(width = 0.2, alpha = 0.35, color = "black") +
   coord_flip() +
   scale_y_continuous(limits = c(quantile(pitstop_data$pit_duration, 0.02, na.rm = TRUE), 
     quantile(pitstop_data$pit_duration, 0.97, na.rm = TRUE)),
