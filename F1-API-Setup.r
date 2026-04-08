@@ -54,3 +54,15 @@ if(resp$status_code != 200) {
 text <- httr::content(resp, "text", encoding = "UTF-8")
 driver_names <- jsonlite::fromJSON(text, simplifyVector = TRUE)
     ##Driver Names End
+
+    ## Laptime Start
+url_sessions <- "https://api.openf1.org/v1/laps"
+
+resp <- httr::GET(url_sessions)
+if (resp$status_code != 200) {
+  stop("Request failed: ", resp$status_code, " — ", httr::content(resp, "text"))
+}
+
+text <- httr::content(resp, "text", encoding = "UTF-8")
+laptime_data <- jsonlite::fromJSON(text, simplifyVector = TRUE)
+    ##Laptime End
